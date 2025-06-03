@@ -1,4 +1,4 @@
-local version = "0.1"
+local version = "0.3.0"
 local productName = "Injest Rates"
 
 local controller = peripheral.wrap("functionalstorage:storage_controller_0")
@@ -144,13 +144,13 @@ local function draw()
         monitor.setCursorPos(1, 1)
         monitor.setBackgroundColor(colors.black)
         monitor.setTextColor(colors.black)
-        monitor.write(string.rep(" ", WIDTH))
+        monitor.write(string.rep(productName, WIDTH))
 
         -- Line 2: Header with "Ingest Rates" and timer
         monitor.setCursorPos(1, 2)
         monitor.setBackgroundColor(colors.black)
         monitor.setTextColor(colors.white)
-        monitor.write(productName + " v" +version)
+        monitor.write("v" .. version)
 
         local timerText = "Next update in: " .. timeUntilRateUpdate .. "s"
         monitor.setCursorPos(WIDTH - #timerText + 1, 2)
