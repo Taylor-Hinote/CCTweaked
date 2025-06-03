@@ -1,3 +1,6 @@
+local version = "0.1"
+local productName = "Injest Rates"
+
 local controller = peripheral.wrap("functionalstorage:storage_controller_0")
 local monitor = peripheral.find("monitor")
 
@@ -147,7 +150,7 @@ local function draw()
         monitor.setCursorPos(1, 2)
         monitor.setBackgroundColor(colors.black)
         monitor.setTextColor(colors.white)
-        monitor.write("Ingest Rates")
+        monitor.write(productName + " v" +version)
 
         local timerText = "Next update in: " .. timeUntilRateUpdate .. "s"
         monitor.setCursorPos(WIDTH - #timerText + 1, 2)
