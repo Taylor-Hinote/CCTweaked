@@ -134,22 +134,42 @@ local function draw()
     local now = os.clock()
     local elapsed = now - startTime
     local countdown = math.max(0, countdownDuration - math.floor(elapsed))
+    local timeUntilRateUpdate = countdownOver and (countdownDuration - math.floor(now - lastRateUpdate)) or countdown
+
+    -- Line 1: Blank
+    monitor.setCursorPos(1, 1)
+    monitor.setBackgroundColor(colors.black)
+    monitor.setTextColor(colors.black)
+    monitor.write(string.rep(" ", WIDTH))
+
+    -- Line 2: Header with "Ingest Rates" and timer
+    monitor.setCursorPos(1, 2)
+    monitor.setBackgroundColor(colors.black)
+    monitor.setTextColor(colors.white)
+    monitor.write("Ingest Rates")
+
+    local timerText = "Next update in: " .. timeUntilRateUpdate .. "s"
+    monitor.setCursorPos(WIDTH - #timerText + 1, 2)
+    monitor.write(timerText)
+
+    -- Line 3: Blank
+    monitor.setCursorPos(1, 3)
+    monitor.setBackgroundColor(colors.black)
+    monitor.setTextColor(colors.black)
+    monitor.write(string.rep(" ", WIDTH))
 
     if elapsed < countdownDuration then
-        -- Show startup countdown screen
+        -- Show startup countdown screen below header
         local message = "Starting in " .. countdown .. " seconds..."
         local midX = math.floor((WIDTH - #message) / 2) + 1
-        local midY = math.floor(LINES / 2)
-
-        monitor.setBackgroundColor(colors.black)
-        monitor.clear()
+        local midY = math.floor((LINES + 3) / 2)
 
         monitor.setCursorPos(midX, midY)
         monitor.setTextColor(colors.yellow)
         monitor.write(message)
     else
         if not countdownOver then
-            -- On first frame after countdown ends, calculate initial rates immediately
+            -- On first frame after countdown ends, calculate initial rates
             countdownOver = true
             lastRateUpdate = now
 
@@ -170,7 +190,7 @@ local function draw()
             end
         end
 
-        -- Normal display with items and rates
+        -- Display item list with adjusted height and starting line
         table.sort(itemList, SORT_MODES[sortModeIndex].sort)
 
         local totalPages = math.max(1, math.ceil(#itemList / LINES_PER_PAGE))
@@ -182,7 +202,7 @@ local function draw()
 
         for i = startIndex, endIndex do
             local item = itemList[i]
-            local line = i - startIndex + 1
+            local line = i - startIndex + 4 -- Start from line 4
             monitor.setCursorPos(1, line)
             monitor.setTextColor(rateColor(item.rate))
             local displayName = shortName(item.name, nameMaxLen)
@@ -190,10 +210,9 @@ local function draw()
             monitor.write(string.format("%-"..nameMaxLen.."s %6d %8s", displayName, item.count, rateStr))
         end
 
-        -- Sort button line
+        -- Adjust button line Y positions
         sortButton = drawButton(1, LINES - 2, "Sort: "..SORT_MODES[sortModeIndex].name, colors.yellow, colors.gray)
 
-        -- Page info and navigation buttons line
         local pageInfo = string.format("Page %d/%d", currentPage, totalPages)
         monitor.setCursorPos(2, LINES - 1)
         monitor.setTextColor(colors.white)
@@ -202,7 +221,6 @@ local function draw()
         prevButton = drawButton(WIDTH - 22, LINES - 1, "< Prev", colors.white, colors.gray)
         nextButton = drawButton(WIDTH - 10, LINES - 1, "Next >", colors.white, colors.gray)
 
-        -- Clear last line for aesthetics
         monitor.setCursorPos(1, LINES)
         monitor.setBackgroundColor(colors.black)
         monitor.write(string.rep(" ", WIDTH))
