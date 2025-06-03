@@ -1,4 +1,5 @@
 local githubRawURL = "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/main.lua"
+local fullUrl = url .. "?t=" .. os.epoch("utc")
 local localFile = "main.lua"
 
 -- Remove old version
@@ -8,7 +9,7 @@ end
 
 -- Attempt to download new version
 local success, err = pcall(function()
-    shell.run("wget", githubRawURL, localFile)
+    shell.run("wget", "-f", fullUrl, localFile)
 end)
 
 -- Run the new script if downloaded
