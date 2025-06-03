@@ -190,7 +190,6 @@ local function draw()
             monitor.write(string.format("%-"..nameMaxLen.."s %6d %8s", displayName, item.count, rateStr))
         end
 
-        -- Draw buttons on two lines
         -- Sort button line
         sortButton = drawButton(1, LINES - 2, "Sort: "..SORT_MODES[sortModeIndex].name, colors.yellow, colors.gray)
 
