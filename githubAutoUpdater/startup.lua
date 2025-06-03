@@ -9,7 +9,7 @@ end
 
 -- Attempt to download new version
 local success, err = pcall(function()
-    shell.run("wget", "-f", fullUrl, localFile)
+    shell.run("wget", fullUrl, localFile)
 end)
 
 -- Run the new script if downloaded
