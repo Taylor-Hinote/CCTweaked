@@ -11,7 +11,7 @@ monitor.clear()
 
 local WIDTH, HEIGHT = monitor.getSize()
 local LINES = HEIGHT
-local LINES_PER_PAGE = LINES - 7 -- Reserve lines for buttons + spacing
+local LINES_PER_PAGE = LINES - 10 -- Reserve lines for buttons + spacing
 
 local SORT_MODES = {
     {name="A -> Z", sort=function(a,b) return a.name < b.name end},
