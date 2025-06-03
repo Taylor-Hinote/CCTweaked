@@ -144,7 +144,7 @@ local function draw()
         monitor.setCursorPos(1, 1)
         monitor.setBackgroundColor(colors.black)
         monitor.setTextColor(colors.white)
-        monitor.write(string.rep(productName, WIDTH))
+        monitor.write(productName)
 
         -- Line 2: Header with "Ingest Rates" and timer
         monitor.setCursorPos(1, 2)
