@@ -11,7 +11,7 @@ monitor.clear()
 
 local WIDTH, HEIGHT = monitor.getSize()
 local LINES = HEIGHT
-local LINES_PER_PAGE = LINES - 4 -- Reserve lines for buttons + spacing
+local LINES_PER_PAGE = LINES - 7 -- Reserve lines for buttons + spacing
 
 local SORT_MODES = {
     {name="A -> Z", sort=function(a,b) return a.name < b.name end},
@@ -136,27 +136,29 @@ local function draw()
     local countdown = math.max(0, countdownDuration - math.floor(elapsed))
     local timeUntilRateUpdate = countdownOver and (countdownDuration - math.floor(now - lastRateUpdate)) or countdown
 
-    -- Line 1: Blank
-    monitor.setCursorPos(1, 1)
-    monitor.setBackgroundColor(colors.black)
-    monitor.setTextColor(colors.black)
-    monitor.write(string.rep(" ", WIDTH))
+    if countdownOver then
+        -- Line 1: Blank
+        monitor.setCursorPos(1, 1)
+        monitor.setBackgroundColor(colors.black)
+        monitor.setTextColor(colors.black)
+        monitor.write(string.rep(" ", WIDTH))
 
-    -- Line 2: Header with "Ingest Rates" and timer
-    monitor.setCursorPos(1, 2)
-    monitor.setBackgroundColor(colors.black)
-    monitor.setTextColor(colors.white)
-    monitor.write("Ingest Rates")
+        -- Line 2: Header with "Ingest Rates" and timer
+        monitor.setCursorPos(1, 2)
+        monitor.setBackgroundColor(colors.black)
+        monitor.setTextColor(colors.white)
+        monitor.write("Ingest Rates")
 
-    local timerText = "Next update in: " .. timeUntilRateUpdate .. "s"
-    monitor.setCursorPos(WIDTH - #timerText + 1, 2)
-    monitor.write(timerText)
+        local timerText = "Next update in: " .. timeUntilRateUpdate .. "s"
+        monitor.setCursorPos(WIDTH - #timerText + 1, 2)
+        monitor.write(timerText)
 
-    -- Line 3: Blank
-    monitor.setCursorPos(1, 3)
-    monitor.setBackgroundColor(colors.black)
-    monitor.setTextColor(colors.black)
-    monitor.write(string.rep(" ", WIDTH))
+        -- Line 3: Blank
+        monitor.setCursorPos(1, 3)
+        monitor.setBackgroundColor(colors.black)
+        monitor.setTextColor(colors.black)
+        monitor.write(string.rep(" ", WIDTH))
+    end
 
     if elapsed < countdownDuration then
         -- Show startup countdown screen below header
