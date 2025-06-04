@@ -10,7 +10,7 @@ local SOUND_FILE = "YouGotMail.dfpwm" -- Only clients need this file
 
 local USER_DB = "user_db.lua"
 local LOG_FILE = "mail_log.txt"
-local version = "0.2.3"
+local version = "0.2.4"
 
 local function loadUserMap()
     if fs.exists(USER_DB) then
@@ -47,9 +47,13 @@ end
 
 -- Manual user map: [ID] = "Name"
 local userMap = loadUserMap()
+term.clear()
+term.setCursorPos(1, 1)
 print("[MailServer] Mail Server v" .. version .. " started.")
 if next(userMap) then
-    print("[MailServer] Loaded user map with " .. #userMap .. " registered users online.")
+    local count = 0
+    for _ in pairs(userMap) do count = count + 1 end
+    print("[MailServer] Loaded user map with " .. count .. " registered users online.")
 else
     print("[MailServer] No registered users found. Awaiting registrations...")
 end
@@ -64,6 +68,13 @@ while true do
             userMap[id] = name
             saveUserMap(userMap)
             local logMsg = "Registered " .. name .. " (ID " .. id .. ")"
+            term.clear()
+            term.setCursorPos(1, 1)
+            print("[MailServer] Mail Server v" .. version .. " started.")
+            local count = 0
+            for _ in pairs(userMap) do count = count + 1 end
+            print("[MailServer] Loaded user map with " .. count .. " registered users online.")
+            print("[MailServer] Listening for mail broadcasts...")
             print("[MailServer] " .. logMsg)
             logEvent(logMsg)
         end
@@ -81,6 +92,13 @@ while true do
             end
             if recipientId then
                 local logMsg = "Mail for " .. recipientName .. " from " .. senderName .. ": " .. mailData
+                term.clear()
+                term.setCursorPos(1, 1)
+                print("[MailServer] Mail Server v" .. version .. " started.")
+                local count = 0
+                for _ in pairs(userMap) do count = count + 1 end
+                print("[MailServer] Loaded user map with " .. count .. " registered users online.")
+                print("[MailServer] Listening for mail broadcasts...")
                 print("[MailServer] " .. logMsg)
                 logEvent(logMsg)
                 -- Relay mail to recipient, include senderName in message
