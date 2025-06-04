@@ -9,6 +9,7 @@ rednet.open(peripheral.getName(modem))
 local SOUND_FILE = "YouGotMail.dfpwm" -- Only clients need this file
 
 local USER_DB = "user_db.lua"
+local LOG_FILE = "mail_log.txt"
 
 local function loadUserMap()
     if fs.exists(USER_DB) then
@@ -25,10 +26,21 @@ local function saveUserMap(map)
     f.close()
 end
 
--- Ensure user_db file exists on server startup
+local function logEvent(text)
+    local f = fs.open(LOG_FILE, fs.exists(LOG_FILE) and "a" or "w")
+    f.writeLine(os.date("[%Y-%m-%d %H:%M:%S] ") .. text)
+    f.close()
+end
+
+-- Ensure user_db and log files exist on server startup
 if not fs.exists(USER_DB) then
     local f = fs.open(USER_DB, "w")
     f.write("return {}")
+    f.close()
+end
+if not fs.exists(LOG_FILE) then
+    local f = fs.open(LOG_FILE, "w")
+    f.writeLine("[MailServer] Log initialized at " .. os.date("%Y-%m-%d %H:%M:%S"))
     f.close()
 end
 
@@ -45,7 +57,9 @@ while true do
             id = tonumber(id)
             userMap[id] = name
             saveUserMap(userMap)
-            print("[MailServer] Registered " .. name .. " (ID " .. id .. ")")
+            local logMsg = "Registered " .. name .. " (ID " .. id .. ")"
+            print("[MailServer] " .. logMsg)
+            logEvent(logMsg)
         end
     else
         -- Expecting message as: "recipientId|mailData"
@@ -54,13 +68,17 @@ while true do
             recipientId = tonumber(recipientId)
             local senderName = userMap[senderId] or ("ID:" .. tostring(senderId))
             local recipientName = userMap[recipientId] or ("ID:" .. tostring(recipientId))
-            print("Mail for " .. recipientName .. " from " .. senderName)
+            local logMsg = "Mail for " .. recipientName .. " from " .. senderName .. ": " .. mailData
+            print("[MailServer] " .. logMsg)
+            logEvent(logMsg)
             -- Relay mail to recipient
             rednet.send(recipientId, mailData, "mail")
             -- Tell recipient to play sound (clients are responsible for having the file)
             rednet.send(recipientId, "play_sound:"..SOUND_FILE, "mail_sound")
         else
-            print("Malformed mail message from " .. senderId)
+            local logMsg = "Malformed mail message from " .. senderId
+            print("[MailServer] " .. logMsg)
+            logEvent(logMsg)
         end
     end
 end
