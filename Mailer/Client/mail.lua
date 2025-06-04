@@ -81,9 +81,9 @@ print("[MailClient] Ready. Type: mail @ID \"Message Here\"")
 while true do
     -- Non-blocking check for rednet messages
     os.queueEvent("mail_prompt")
-    local event, ... = os.pullEvent()
+    local event = os.pullEvent()
     if event == "rednet_message" then
-        local senderId, msg, proto = ...
+        local senderId, msg, proto = os.pullEventRaw()
         if proto == "mail" then
             print("[MailClient] New mail from " .. senderId .. ": " .. msg)
         elseif proto == "mail_sound" and msg:match("^play_sound:") then
