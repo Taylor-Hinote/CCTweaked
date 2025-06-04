@@ -19,8 +19,15 @@ The Bootloader provides a `startup.lua` script that should be installed first on
 - Downloads the latest versions of your scripts directly from GitHub using `wget`.
 - Ensures your computers always run the most up-to-date code from your repository.
 
+**Quick Setup:**
+Copy and paste this command into your ComputerCraft computer to download the bootloader:
+
+```
+wget https://raw.githubusercontent.com/Taylor-Hinote/CCTweaked/refs/heads/main/Bootloader/startup.lua startup.lua
+```
+
 **Usage:**
-1. Place the `startup.lua` from the Bootloader folder onto your computer.
+1. Place the `startup.lua` from the Bootloader folder onto your computer (or use the command above).
 2. On boot, it will automatically fetch and update the required scripts from the provided GitHub raw URLs.
 
 ### FunctionStorageRateDisplay
