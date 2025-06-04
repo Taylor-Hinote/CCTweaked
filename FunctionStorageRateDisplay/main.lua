@@ -21,8 +21,8 @@ local SORT_MODES = {
     {name="Z -> A", sort=function(a,b) return a.name > b.name end},
     {name="Count Asc", sort=function(a,b) return a.count < b.count end},
     {name="Count Desc", sort=function(a,b) return a.count > b.count end},
-    {name="Input Asc", sort=function(a,b) return a.rate < b.rate end},
-    {name="Input Desc", sort=function(a,b) return a.rate > b.rate end},
+    {name="Injest Asc", sort=function(a,b) return a.rate < b.rate end},
+    {name="Injest Desc", sort=function(a,b) return a.rate > b.rate end},
 }
 local sortModeIndex = 6
 local currentPage = 1
