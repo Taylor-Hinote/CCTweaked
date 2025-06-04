@@ -62,19 +62,29 @@ while true do
             logEvent(logMsg)
         end
     else
-        -- Expecting message as: "recipientId|mailData"
-        local recipientId, mailData = message:match("^(%d+)%|(.*)$")
-        if recipientId and mailData then
-            recipientId = tonumber(recipientId)
-            local senderName = userMap[senderId] or ("ID:" .. tostring(senderId))
-            local recipientName = userMap[recipientId] or ("ID:" .. tostring(recipientId))
-            local logMsg = "Mail for " .. recipientName .. " from " .. senderName .. ": " .. mailData
-            print("[MailServer] " .. logMsg)
-            logEvent(logMsg)
-            -- Relay mail to recipient
-            rednet.send(recipientId, mailData, "mail")
-            -- Tell recipient to play sound (clients are responsible for having the file)
-            rednet.send(recipientId, "play_sound:"..SOUND_FILE, "mail_sound")
+        -- Expecting message as: "recipientName|mailData"
+        local recipientName, mailData = message:match("^([%w_%-]+)%|(.*)$")
+        if recipientName and mailData then
+            -- Find recipient ID by name
+            local recipientId = nil
+            for id, name in pairs(userMap) do
+                if name == recipientName then
+                    recipientId = id
+                    break
+                end
+            end
+            if recipientId then
+                local senderName = userMap[senderId] or ("ID:" .. tostring(senderId))
+                local logMsg = "Mail for " .. recipientName .. " from " .. senderName .. ": " .. mailData
+                print("[MailServer] " .. logMsg)
+                logEvent(logMsg)
+                -- Relay mail to recipient
+                rednet.send(recipientId, mailData, "mail")
+            else
+                local logMsg = "Mail for unknown user '" .. recipientName .. "' from " .. (userMap[senderId] or senderId)
+                print("[MailServer] " .. logMsg)
+                logEvent(logMsg)
+            end
         else
             local logMsg = "Malformed mail message from " .. senderId
             print("[MailServer] " .. logMsg)
