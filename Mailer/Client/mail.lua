@@ -87,10 +87,8 @@ while true do
     if event == "rednet_message" then
         local senderId, msg, proto = os.pullEventRaw()
         if proto == "mail" then
-            print("[MailClient] New mail from " .. senderId .. ": " .. msg)
+            print("[MailClient] New mail: " .. msg)
             playMailSound()
-        elseif proto == "mail_sound" and msg:match("^play_sound:") then
-            -- No longer needed, play sound on mail receipt
         end
     elseif event == "mail_prompt" or event == "char" or event == "key" then
         -- Prompt for user input
