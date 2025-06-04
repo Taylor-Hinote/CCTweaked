@@ -54,11 +54,11 @@ local function sendMail(recipientName, message)
 end
 
 local function parseMailCommand(input)
-    -- Expects: mail @userName messageWithoutNeedingQuotes or soundTest
+    -- Expects: mail @userName "Message Here" or soundTest
     if input == "soundTest" then
         return "__SOUNDTEST__", nil
     end
-    local name, msg = input:match('^mail%s+@([%w_%-]+)%s+(.+)$')
+    local name, msg = input:match('^mail%s+@([%w_%-]+)%s+"([^\"]+)"%s*$')
     if name and msg then
         return name, msg
     end
@@ -86,7 +86,7 @@ local function loadConfig()
 end
 
 local messageHistory = {}
-local HISTORY_LIMIT = 5
+local HISTORY_LIMIT = 10
 
 local function printHeaderAndMessages()
     term.clear()
@@ -131,39 +131,29 @@ while true do
             local from, message = msg:match('^([%w_%-]+)%|(.*)$')
             local displayMsg
             if from and message then
-                displayMsg = "@" .. from .. ": " .. message
+                displayMsg = "[MailClient] New mail from @" .. from .. ": " .. message
             else
                 displayMsg = "[MailClient] New mail: " .. msg
             end
             table.insert(messageHistory, displayMsg)
-            if #messageHistory > HISTORY_LIMIT then table.remove(messageHistory, 1) end
             printHeaderAndMessages()
             playMailSound()
         end
     elseif event == "char" or event == "key" then
         printHeaderAndMessages()
         write(": ")
-        local input, timedOut = read(nil, nil, function() return os.startTimer(15) end)
-        if not input or input == "" or timedOut then
-            -- Standby: just redraw header/messages and continue
+        local input = read()
+        local name, msg = parseMailCommand(input)
+        if name == "__SOUNDTEST__" then
+            print("[MailClient] Playing sound test...")
+            playMailSound()
+        elseif name and msg then
+            sendMail(name, msg)
+            table.insert(messageHistory, "[MailClient] Sent mail to @" .. name .. ": " .. msg)
             printHeaderAndMessages()
-        else
-            local name, msg = parseMailCommand(input)
-            if name == "__SOUNDTEST__" then
-                playMailSound()
-            elseif name and msg then
-                sendMail(name, msg)
-                table.insert(messageHistory, "[MailClient] Sent mail to @" .. name .. ": " .. msg)
-                if #messageHistory > HISTORY_LIMIT then table.remove(messageHistory, 1) end
-                printHeaderAndMessages()
-            else
-                table.insert(messageHistory, "[MailClient] Invalid command. Use: mail @userName \"Message Here\" or soundTest")
-                if #messageHistory > HISTORY_LIMIT then table.remove(messageHistory, 1) end
-                printHeaderAndMessages()
-            end
+        elseif input ~= "" then
+            table.insert(messageHistory, "[MailClient] Invalid command. Use: mail @userName \"Message Here\" or soundTest")
+            printHeaderAndMessages()
         end
-    elseif event == "timer" then
-        -- Timer event: go back to standby
-        printHeaderAndMessages()
     end
 end
