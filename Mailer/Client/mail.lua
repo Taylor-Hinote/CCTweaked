@@ -2,7 +2,7 @@
 -- Sends and receives mail, plays sound on new mail
 
 -- Ensure a wireless modem is present and open rednet on it
-local version = "0.2.0"
+local version = "0.2.1"
 local modem = peripheral.find("modem", function(_, m) return m.isWireless and m.isWireless() end)
 if not modem then error("No wireless modem attached") end
 rednet.open(peripheral.getName(modem))
@@ -14,7 +14,15 @@ local CONFIG_FILE = "config.lua"
 local function playMailSound()
     if speaker then
         local ok, err = pcall(function()
-            speaker.playAudio(SOUND_URL)
+            -- Download the DFPWM file and play as a table
+            local response = http.get(SOUND_URL)
+            if response then
+                local data = response.readAll()
+                response.close()
+                speaker.playAudio({data})
+            else
+                print("[MailClient] Failed to download sound file from URL!")
+            end
         end)
         if not ok then
             print("[MailClient] Error playing sound from URL: " .. tostring(err))
