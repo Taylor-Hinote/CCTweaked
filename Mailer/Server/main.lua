@@ -10,6 +10,7 @@ local SOUND_FILE = "YouGotMail.dfpwm" -- Only clients need this file
 
 local USER_DB = "user_db.lua"
 local LOG_FILE = "mail_log.txt"
+local version = "0.2.0"
 
 local function loadUserMap()
     if fs.exists(USER_DB) then
@@ -46,7 +47,12 @@ end
 
 -- Manual user map: [ID] = "Name"
 local userMap = loadUserMap()
-
+print("[MailServer] Mail Server v" .. version .. " started.")
+if next(userMap) then
+    print("[MailServer] Loaded user map with " .. #userMap .. " registered users.")
+else
+    print("[MailServer] No registered users found. Awaiting registrations...")
+end
 print("[MailServer] Listening for mail broadcasts...")
 
 while true do
