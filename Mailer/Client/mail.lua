@@ -10,25 +10,40 @@ rednet.open(peripheral.getName(modem))
 local speaker = peripheral.find("speaker")
 local SOUND_URL = "https://github.com/Taylor-Hinote/CCTweaked/raw/refs/heads/main/Mailer/Client/YouGotMail.dfpwm"
 local CONFIG_FILE = "config.lua"
+local LOCAL_SOUND_FILE = "YouGotMail.dfpwm"
+
+local function downloadSoundIfNeeded()
+    if not fs.exists(LOCAL_SOUND_FILE) then
+        print("[MailClient] Downloading sound file...")
+        local response = http.get(SOUND_URL)
+        if response then
+            local data = response.readAll()
+            response.close()
+            local f = fs.open(LOCAL_SOUND_FILE, "wb")
+            f.write(data)
+            f.close()
+            print("[MailClient] Sound file downloaded.")
+        else
+            print("[MailClient] Failed to download sound file from URL!")
+        end
+    end
+end
+
+downloadSoundIfNeeded()
 
 local function playMailSound()
-    if speaker then
+    if speaker and fs.exists(LOCAL_SOUND_FILE) then
         local ok, err = pcall(function()
-            -- Download the DFPWM file and play as a table
-            local response = http.get(SOUND_URL)
-            if response then
-                local data = response.readAll()
-                response.close()
-                speaker.playAudio({data})
-            else
-                print("[MailClient] Failed to download sound file from URL!")
-            end
+            local f = fs.open(LOCAL_SOUND_FILE, "rb")
+            local data = f.readAll()
+            f.close()
+            speaker.playAudio({data})
         end)
         if not ok then
-            print("[MailClient] Error playing sound from URL: " .. tostring(err))
+            print("[MailClient] Error playing sound from file: " .. tostring(err))
         end
     else
-        print("[MailClient] Speaker not found!")
+        print("[MailClient] Speaker or sound file not found!")
     end
 end
 
@@ -91,7 +106,7 @@ end
 
 print("[MailClient] Client Version v" .. version)
 print("[MailClient] Your Computer ID is: " .. os.getComputerID())
-print("[MailClient] Ready. Type: mail @ID \"Message Here\"")
+print("[MailClient] Ready. Type: mail @userName \"Message Here\" or soundTest")
 
 while true do
     local event, p1, p2, p3 = os.pullEvent()
@@ -108,7 +123,11 @@ while true do
             playMailSound()
         end
     elseif event == "char" or event == "key" then
-        -- Prompt for user input
+        term.clear()
+        term.setCursorPos(1, 1)
+        print("[MailClient] Client Version v" .. version)
+        print("[MailClient] Your Computer ID is: " .. os.getComputerID())
+        print("[MailClient] Ready. Type: mail @userName \"Message Here\" or soundTest")
         write(": ")
         local input = read()
         local name, msg = parseMailCommand(input)
@@ -118,7 +137,7 @@ while true do
         elseif name and msg then
             sendMail(name, msg)
         elseif input ~= "" then
-            print("[MailClient] Invalid command. Use: mail @userName \"Message Here\"")
+            print("[MailClient] Invalid command. Use: mail @userName \"Message Here\" or soundTest")
         end
     end
 end
