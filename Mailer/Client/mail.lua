@@ -2,6 +2,7 @@
 -- Sends and receives mail, plays sound on new mail
 
 -- Ensure a wireless modem is present and open rednet on it
+local version = "0.2.0"
 local modem = peripheral.find("modem", function(_, m) return m.isWireless and m.isWireless() end)
 if not modem then error("No wireless modem attached") end
 rednet.open(peripheral.getName(modem))
@@ -68,6 +69,7 @@ if not id or not userName then
     userName = read()
     id = os.getComputerID()
     saveConfig(id, userName)
+    print("[MailClient] Client Version v" .. version)
     print("[MailClient] Registered as '" .. userName .. "' with ID " .. id)
     -- Broadcast registration to server
     rednet.broadcast("register|" .. id .. "|" .. userName, "mail_register")
