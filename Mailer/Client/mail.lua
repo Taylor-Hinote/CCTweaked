@@ -34,13 +34,11 @@ downloadSoundIfNeeded()
 local function playMailSound()
     if speaker and fs.exists(LOCAL_SOUND_FILE) then
         local ok, err = pcall(function()
-            local f = fs.open(LOCAL_SOUND_FILE, "rb")
-            local data = f.readAll()
-            f.close()
-            speaker.playAudio({data})
+            -- Use shell.run to play the sound as the shell command works
+            shell.run("speaker", "play", LOCAL_SOUND_FILE)
         end)
         if not ok then
-            print("[MailClient] Error playing sound from file: " .. tostring(err))
+            print("[MailClient] Error playing sound using shell: " .. tostring(err))
         end
     else
         print("[MailClient] Speaker or sound file not found!")
