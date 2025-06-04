@@ -1,4 +1,4 @@
-local version = "0.3.0"
+local version = "0.3.2"
 local productName = "Injest Rates"
 
 local controller = peripheral.wrap("functionalstorage:storage_controller_0")
