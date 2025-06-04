@@ -81,16 +81,14 @@ print("[MailClient] Your Computer ID is: " .. os.getComputerID())
 print("[MailClient] Ready. Type: mail @ID \"Message Here\"")
 
 while true do
-    -- Non-blocking check for rednet messages
-    os.queueEvent("mail_prompt")
-    local event = os.pullEvent()
+    local event, p1, p2, p3 = os.pullEvent()
     if event == "rednet_message" then
-        local senderId, msg, proto = os.pullEventRaw()
+        local senderId, msg, proto = p1, p2, p3
         if proto == "mail" then
             print("[MailClient] New mail: " .. msg)
             playMailSound()
         end
-    elseif event == "mail_prompt" or event == "char" or event == "key" then
+    elseif event == "char" or event == "key" then
         -- Prompt for user input
         write(": ")
         local input = read()
