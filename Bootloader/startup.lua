@@ -1,5 +1,17 @@
-local githubRawURL = "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/main.lua"
+local urlConfigFile = "bootloader.lua"
 local localFile = "main.lua"
+
+local githubRawURL = nil
+if fs.exists(urlConfigFile) then
+    local f = fs.open(urlConfigFile, "r")
+    githubRawURL = f.readLine()
+    f.close()
+end
+
+if not githubRawURL or githubRawURL == "" then
+    print("[Bootloader] Please 'edit bootloader.lua' and insert the raw URL on the first line.")
+    return
+end
 
 -- Remove old version
 if fs.exists(localFile) then
