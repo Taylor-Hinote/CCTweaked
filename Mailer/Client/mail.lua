@@ -32,7 +32,7 @@ end
 
 local function parseMailCommand(input)
     -- Expects: mail @ID "Message Here"
-    local id, msg = input:match("^mail%s+@(%d+)%s+\"(.-)\"")
+    local id, msg = input:match('^mail%s+@(%d+)%s+"([^"]+)"%s*$')
     if id and msg then
         return tonumber(id), msg
     end
