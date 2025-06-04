@@ -33,10 +33,10 @@ local function playMailSound()
 end
 
 local function sendMail(recipientName, message)
-    -- Look up recipient ID from userMap broadcasted by server
-    -- For now, just broadcast with recipientName, server will resolve
+    -- Include sender's userName in the payload
     local myId = os.getComputerID()
-    local payload = recipientName .. "|" .. message
+    local senderName = userName or tostring(myId)
+    local payload = recipientName .. "|" .. senderName .. "|" .. message
     rednet.broadcast(payload)
     print("[MailClient] Sent mail to " .. recipientName)
 end
@@ -95,7 +95,13 @@ while true do
     if event == "rednet_message" then
         local senderId, msg, proto = p1, p2, p3
         if proto == "mail" then
-            print("[MailClient] New mail: " .. msg)
+            -- Expecting: senderName|message
+            local from, message = msg:match('^([%w_%-]+)%|(.*)$')
+            if from and message then
+                print("[MailClient] New mail from @" .. from .. ": " .. message)
+            else
+                print("[MailClient] New mail: " .. msg)
+            end
             playMailSound()
         end
     elseif event == "char" or event == "key" then
