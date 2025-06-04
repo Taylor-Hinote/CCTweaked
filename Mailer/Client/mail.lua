@@ -23,18 +23,20 @@ local function playMailSound()
     end
 end
 
-local function sendMail(recipientId, message)
+local function sendMail(recipientName, message)
+    -- Look up recipient ID from userMap broadcasted by server
+    -- For now, just broadcast with recipientName, server will resolve
     local myId = os.getComputerID()
-    local payload = tostring(recipientId) .. "|" .. message
+    local payload = recipientName .. "|" .. message
     rednet.broadcast(payload)
-    print("[MailClient] Sent mail to " .. recipientId)
+    print("[MailClient] Sent mail to " .. recipientName)
 end
 
 local function parseMailCommand(input)
-    -- Expects: mail @ID "Message Here"
-    local id, msg = input:match('^mail%s+@(%d+)%s+"([^"]+)"%s*$')
-    if id and msg then
-        return tonumber(id), msg
+    -- Expects: mail @userName "Message Here"
+    local name, msg = input:match('^mail%s+@([%w_%-]+)%s+"([^"]+)"%s*$')
+    if name and msg then
+        return name, msg
     end
     return nil, nil
 end
@@ -86,18 +88,19 @@ while true do
         local senderId, msg, proto = os.pullEventRaw()
         if proto == "mail" then
             print("[MailClient] New mail from " .. senderId .. ": " .. msg)
-        elseif proto == "mail_sound" and msg:match("^play_sound:") then
             playMailSound()
+        elseif proto == "mail_sound" and msg:match("^play_sound:") then
+            -- No longer needed, play sound on mail receipt
         end
     elseif event == "mail_prompt" or event == "char" or event == "key" then
         -- Prompt for user input
         write(": ")
         local input = read()
-        local id, msg = parseMailCommand(input)
-        if id and msg then
-            sendMail(id, msg)
+        local name, msg = parseMailCommand(input)
+        if name and msg then
+            sendMail(name, msg)
         elseif input ~= "" then
-            print("[MailClient] Invalid command. Use: mail @ID \"Message Here\"")
+            print("[MailClient] Invalid command. Use: mail @userName \"Message Here\"")
         end
     end
 end
