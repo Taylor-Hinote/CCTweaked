@@ -37,5 +37,7 @@ else
     if err then print(err) end
 end
 
+shell.run("set motd.enable, false")
+
 term.clear()
 term.setCursorPos(1, 1)
