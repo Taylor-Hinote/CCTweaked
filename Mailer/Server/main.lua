@@ -49,7 +49,7 @@ end
 local userMap = loadUserMap()
 print("[MailServer] Mail Server v" .. version .. " started.")
 if next(userMap) then
-    print("[MailServer] Loaded user map with " .. #userMap .. " registered users.")
+    print("[MailServer] Loaded user map with " .. #userMap .. " registered users online.")
 else
     print("[MailServer] No registered users found. Awaiting registrations...")
 end
