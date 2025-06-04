@@ -8,7 +8,7 @@ if not modem then error("No wireless modem attached") end
 rednet.open(peripheral.getName(modem))
 
 local speaker = peripheral.find("speaker")
-local SOUND_URL = "https://github.com/Taylor-Hinote/CCTweaked/raw/refs/heads/main/MailTest/YouGotMail.dfpwm"
+local SOUND_URL = "https://github.com/Taylor-Hinote/CCTweaked/raw/refs/heads/main/Mailer/Client/YouGotMail.dfpwm"
 local CONFIG_FILE = "config.lua"
 
 local function playMailSound()
@@ -34,8 +34,7 @@ end
 
 local function sendMail(recipientName, message)
     -- Include sender's userName in the payload
-    local myId = os.getComputerID()
-    local senderName = userName or tostring(myId)
+    local senderName = userName or tostring(os.getComputerID())
     local payload = recipientName .. "|" .. senderName .. "|" .. message
     rednet.broadcast(payload)
     print("[MailClient] Sent mail to " .. recipientName)
