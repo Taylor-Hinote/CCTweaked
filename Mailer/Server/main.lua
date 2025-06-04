@@ -10,7 +10,7 @@ local SOUND_FILE = "YouGotMail.dfpwm" -- Only clients need this file
 
 local USER_DB = "user_db.lua"
 local LOG_FILE = "mail_log.txt"
-local version = "0.2.0"
+local version = "0.2.1"
 
 local function loadUserMap()
     if fs.exists(USER_DB) then
@@ -68,9 +68,9 @@ while true do
             logEvent(logMsg)
         end
     else
-        -- Expecting message as: "recipientName|mailData"
-        local recipientName, mailData = message:match("^([%w_%-]+)%|(.*)$")
-        if recipientName and mailData then
+        -- Expecting message as: "recipientName|senderName|mailData"
+        local recipientName, senderName, mailData = message:match("^([%w_%-]+)%|([%w_%-]+)%|(.*)$")
+        if recipientName and senderName and mailData then
             -- Find recipient ID by name
             local recipientId = nil
             for id, name in pairs(userMap) do
@@ -80,12 +80,11 @@ while true do
                 end
             end
             if recipientId then
-                local senderName = userMap[senderId] or ("ID:" .. tostring(senderId))
                 local logMsg = "Mail for " .. recipientName .. " from " .. senderName .. ": " .. mailData
                 print("[MailServer] " .. logMsg)
                 logEvent(logMsg)
-                -- Relay mail to recipient
-                rednet.send(recipientId, mailData, "mail")
+                -- Relay mail to recipient, include senderName in message
+                rednet.send(recipientId, senderName .. "|" .. mailData, "mail")
             else
                 local logMsg = "Mail for unknown user '" .. recipientName .. "' from " .. (userMap[senderId] or senderId)
                 print("[MailServer] " .. logMsg)
