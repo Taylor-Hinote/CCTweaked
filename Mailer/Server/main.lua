@@ -10,7 +10,7 @@ local SOUND_FILE = "YouGotMail.dfpwm" -- Only clients need this file
 
 local USER_DB = "user_db.lua"
 local LOG_FILE = "mail_log.txt"
-local version = "0.2.1"
+local version = "0.2.3"
 
 local function loadUserMap()
     if fs.exists(USER_DB) then
