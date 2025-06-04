@@ -77,7 +77,7 @@ if not id or not userName then
     userName = read()
     id = os.getComputerID()
     saveConfig(id, userName)
-    print("[MailClient] Client Version v" .. version)
+
     print("[MailClient] Registered as '" .. userName .. "' with ID " .. id)
     -- Broadcast registration to server
     rednet.broadcast("register|" .. id .. "|" .. userName, "mail_register")
@@ -87,6 +87,7 @@ else
     rednet.broadcast("register|" .. id .. "|" .. userName, "mail_register")
 end
 
+print("[MailClient] Client Version v" .. version)
 print("[MailClient] Your Computer ID is: " .. os.getComputerID())
 print("[MailClient] Ready. Type: mail @ID \"Message Here\"")
 
