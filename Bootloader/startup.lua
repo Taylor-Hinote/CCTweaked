@@ -18,3 +18,6 @@ else
     print("Failed to download script.")
     if err then print(err) end
 end
+
+term.clear()
+term.setCursorPos(1, 1)
