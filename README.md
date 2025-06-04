@@ -22,10 +22,10 @@ The Bootloader provides a `startup.lua` script that should be installed first on
 - Now supports a `bootloader.lua` config file: place your desired raw script URL in this file to control what the bootloader downloads and runs.
 
 **Quick Setup:**
-Copy and paste this command into your ComputerCraft computer to download and run the bootloader as `startup.lua`:
+Copy and paste this command into your ComputerCraft computer to download and save the bootloader as `startup.lua`:
 
 ```
-wget run https://raw.githubusercontent.com/Taylor-Hinote/CCTweaked/refs/heads/main/Bootloader/startup.lua startup.lua
+wget https://raw.githubusercontent.com/Taylor-Hinote/CCTweaked/refs/heads/main/Bootloader/startup.lua startup.lua
 ```
 
 **Usage:**
@@ -65,9 +65,9 @@ You can use the direct URL below with the bootloader's `bootloader.lua` file, or
 ```
 https://raw.githubusercontent.com/Taylor-Hinote/CCTweaked/refs/heads/main/Mailer/Client/mail.lua
 ```
-Or, to download manually as `startup.lua` and run immediately:
+Or, to download manually as `startup.lua` and run on boot:
 ```
-wget run https://raw.githubusercontent.com/Taylor-Hinote/CCTweaked/refs/heads/main/Mailer/Client/mail.lua startup.lua
+wget https://raw.githubusercontent.com/Taylor-Hinote/CCTweaked/refs/heads/main/Mailer/Client/mail.lua startup.lua
 ```
 
 #### Mailer Server
@@ -80,9 +80,9 @@ You can use the direct URL below with the bootloader's `bootloader.lua` file, or
 ```
 https://raw.githubusercontent.com/Taylor-Hinote/CCTweaked/refs/heads/main/Mailer/Server/main.lua
 ```
-Or, to download manually as `startup.lua` and run immediately:
+Or, to download manually as `startup.lua` and run on boot:
 ```
-wget run https://raw.githubusercontent.com/Taylor-Hinote/CCTweaked/refs/heads/main/Mailer/Server/main.lua startup.lua
+wget https://raw.githubusercontent.com/Taylor-Hinote/CCTweaked/refs/heads/main/Mailer/Server/main.lua startup.lua
 ```
 
 **Usage:**
