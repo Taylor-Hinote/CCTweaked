@@ -2,7 +2,7 @@
 -- Sends and receives mail, plays sound on new mail
 
 -- Ensure a wireless modem is present and open rednet on it
-local version = "0.2.2"
+local version = "0.2.3"
 local modem = peripheral.find("modem", function(_, m) return m.isWireless and m.isWireless() end)
 if not modem then error("No wireless modem attached") end
 rednet.open(peripheral.getName(modem))
@@ -87,6 +87,7 @@ local function loadConfig()
     return nil, nil
 end
 
+print("[MailClient] Client Version v" .. version)
 local id, userName = loadConfig()
 if not id or not userName then
     print("[MailClient] First time setup. Please enter your username:")
@@ -104,7 +105,6 @@ else
     rednet.broadcast("register|" .. id .. "|" .. userName, "mail_register")
 end
 
-print("[MailClient] Client Version v" .. version)
 print("[MailClient] Your Computer ID is: " .. os.getComputerID())
 print("[MailClient] Ready. Type: mail @userName \"Message Here\" or soundTest")
 
