@@ -2,7 +2,7 @@
 -- Sends and receives mail, plays sound on new mail
 
 -- Ensure a wireless modem is present and open rednet on it
-local version = "0.2.3"
+local version = "0.2.4"
 local modem = peripheral.find("modem", function(_, m) return m.isWireless and m.isWireless() end)
 if not modem then error("No wireless modem attached") end
 rednet.open(peripheral.getName(modem))
@@ -54,11 +54,11 @@ local function sendMail(recipientName, message)
 end
 
 local function parseMailCommand(input)
-    -- Expects: mail @userName "Message Here" or soundTest
+    -- Expects: mail @userName messageWithoutNeedingQuotes or soundTest
     if input == "soundTest" then
         return "__SOUNDTEST__", nil
     end
-    local name, msg = input:match('^mail%s+@([%w_%-]+)%s+"([^\"]+)"%s*$')
+    local name, msg = input:match('^mail%s+@([%w_%-]+)%s+(.+)$')
     if name and msg then
         return name, msg
     end
