@@ -6,6 +6,12 @@ if fs.exists(urlConfigFile) then
     local f = fs.open(urlConfigFile, "r")
     githubRawURL = f.readLine()
     f.close()
+else
+    local f = fs.open(urlConfigFile, "w")
+    f.writeLine("-- Paste your raw script URL here, e.g. https://raw.githubusercontent.com/YourUser/YourRepo/main/main.lua")
+    f.close()
+    print("[Bootloader] Created 'bootloader.lua'. Please edit this file and insert the raw URL on the first line.")
+    return
 end
 
 if not githubRawURL or githubRawURL == "" then
